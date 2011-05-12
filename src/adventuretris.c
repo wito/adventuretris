@@ -31,6 +31,7 @@ void blitPiece (piece, field);
 int spawnPiece (field, piece*);
 
 void printField (field);
+void printPiece (piece);
 
 int main () {
   field gameField = NULL;
@@ -136,6 +137,20 @@ void printField (field f) {
     printf("|");
     for (int x = 0; x < WIDTH; x++) {
       if (f[y][x])
+        printf("*");
+      else
+        printf(" ");
+    }
+    printf("|\n");
+  }
+  printf("\n");
+}
+
+void printPiece (piece p) {
+  for (int y = 0; y < 4; y++) {
+    printf("|");
+    for (int x = 0; x < 4; x++) {
+      if (p[y][x])
         printf("*");
       else
         printf(" ");
