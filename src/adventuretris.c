@@ -162,7 +162,7 @@ int spawnPiece (field f, piece *p) {
   int retval = collidePiece(*p, f);
 
   if (retval) {
-    printf("SPAWN_PIECE: %d\n", type);
+    printf("SPAWN_PIECE: %s\n", pieceStrings[type]);
   } else {
     printf("SPAWN_FAIL\n");
   }

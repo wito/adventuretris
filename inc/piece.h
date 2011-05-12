@@ -1,3 +1,6 @@
+#ifndef PIECE_H
+#define PIECE_H
+
 typedef char** piece;
 
 typedef enum {
@@ -17,7 +20,19 @@ typedef enum {
   BLACK = 1
 } pieceColor;
 
+static const char *pieceStrings[] = {
+  "IPIECE",
+  "SPIECE",
+  "ZPIECE",
+  "JPIECE",
+  "LPIECE",
+  "OPIECE",
+  "TPIECE"
+};
+
 piece createPiece(pieceType type);
 void destroyPiece(piece self);
 
 piece rotatePiece(piece self);
+
+#endif // PIECE_H
