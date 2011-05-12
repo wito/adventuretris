@@ -24,6 +24,7 @@ loc location = {0,0};
 
 int movePiece (piece, field);
 int nudgePiece (piece, field, direction);
+piece turnPiece (piece, field);
 
 int collidePiece (piece, field);
 void blitPiece (piece, field);
@@ -49,14 +50,7 @@ int main () {
 
   while (spawnPiece(gameField, &currentPiece)) {
     while (movePiece(currentPiece,gameField)) {
-      piece rotPiece = rotatePiece(currentPiece);
-
-      if (collidePiece(rotPiece,gameField)) {
-        destroyPiece(currentPiece);
-        currentPiece = rotPiece;
-      } else {
-        destroyPiece(rotPiece);
-      }
+      currentPiece = turnPiece(currentPiece,gameField);
 
 #ifdef DEBUG
       printPiece(currentPiece);
@@ -181,4 +175,16 @@ void printPiece (piece p) {
     printf("|\n");
   }
   printf("\n");
+}
+
+piece turnPiece (piece p, field f) {
+  piece rotPiece = rotatePiece(p);
+
+  if (collidePiece(rotPiece,f)) {
+    destroyPiece(p);
+    return rotPiece;
+  } else {
+    destroyPiece(rotPiece);
+    return p;
+  }
 }
