@@ -1,7 +1,12 @@
 #define _BSD_SOURCE
+#define _GNU_SOURCE
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#define DEBUG
+
+#include <strings.h>
 
 #include "piece.h"
 
@@ -21,6 +26,7 @@ typedef struct {
 } loc;
 
 typedef enum {
+  C_VOID = -1,
   C_LEFT = 0,
   C_RIGHT = 1,
   C_DROP = 2,
@@ -50,6 +56,8 @@ int spawnPiece (field, piece*);
 void printField (field);
 void printPiece (piece);
 
+command parseCommand (const char *);
+
 void zapLines (field);
 int dropField (field);
 
@@ -67,15 +75,39 @@ int main () {
 
   // --- Main game --- //
 
+  size_t nBytes = 40;
+  char *commandString = malloc(nBytes);
+
+  size_t bytes_read = 0;
+
   while (spawnPiece(gameField, &currentPiece)) {
     while (movePiece(currentPiece,gameField)) {
-      currentPiece = turnPiece(currentPiece,gameField);
+      bytes_read = getline(&commandString, &nBytes, stdin);
+
+      printf("%s\n", commandString);
+
+      command currentCommand = parseCommand(commandString);
+
+      switch (currentCommand) {
+      case C_VOID:
+      case C_DROP:
+        break;
+      case C_TURN:
+        currentPiece = turnPiece(currentPiece,gameField);
+        break;
+      case C_QUIT:
+        exit(0);
+      case C_LEFT:
+        nudgePiece(currentPiece,gameField,left);
+        break;
+      case C_RIGHT:
+        nudgePiece(currentPiece,gameField,right);
+        break;
+      }
 
 #ifdef DEBUG
       printPiece(currentPiece);
 #endif
-
-      nudgePiece(currentPiece,gameField,(random() % 3) - 1);
     }
 
     updateField(gameField);
@@ -139,7 +171,7 @@ int collidePiece (piece p, field f) {
   for (int py = 0; py < 4; py++) {
     for (int px = 0; px < 4; px++) {
       if (p[py][px]) {
-        if (location.x + px >= WIDTH || location.x < 0 || location.y + py >= DEPTH || location.y < 0) // edges
+        if (location.x + px >= WIDTH || location.x + px < 0 || location.y + py >= DEPTH || location.y < 0) // edges
           return 0;
 
         if (f[location.y + py][location.x + px]) // field pieces
@@ -154,7 +186,7 @@ int collidePiece (piece p, field f) {
 void blitPiece (piece p, field f) {
   for (int py = 0; py < 4; py++) {
     for (int px = 0; px < 4; px++) {
-      if (location.x + px >= WIDTH || location.x < 0 || location.y + py >= DEPTH || location.y < 0) // edges
+      if (location.x + px >= WIDTH || location.x + px < 0 || location.y + py >= DEPTH || location.y + py < 0) // edges
         continue;
 
       f[location.y + py][location.x + px] = (f[location.y + py][location.x + px] || p[py][px]);
@@ -289,4 +321,13 @@ field createField () {
   printf("CREATE_FIELD\n");
 
   return gameField;
+}
+
+command parseCommand (const char *command) {
+  for (int c = 0; c < 5; c++) {
+    if (!strncasecmp(command,commandStrings[c],4))
+      return c;
+  }
+
+  return -1;
 }
