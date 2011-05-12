@@ -37,6 +37,8 @@ void printPiece (piece);
 void zapLines (field);
 int dropField (field);
 
+void updateField (field);
+
 int main () {
   field gameField = NULL;
   piece currentPiece = NULL;
@@ -225,4 +227,9 @@ int dropField (field f) {
   }
 
   return retval;
+}
+
+void updateField (field f) {
+  zapLines(f);
+  while (dropField(f));
 }
