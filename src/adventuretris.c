@@ -20,6 +20,22 @@ typedef struct {
   int y;
 } loc;
 
+typedef enum {
+  C_LEFT = 0,
+  C_RIGHT = 1,
+  C_DROP = 2,
+  C_TURN = 3,
+  C_QUIT = 4
+} command;
+
+static const char *commandStrings[] = {
+  "left",
+  "right",
+  "drop",
+  "turn",
+  "quit"
+};
+
 loc location = {0,0};
 
 int movePiece (piece, field);
