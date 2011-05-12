@@ -34,6 +34,9 @@ int spawnPiece (field, piece*);
 void printField (field);
 void printPiece (piece);
 
+void zapLines (field);
+int dropField (field);
+
 int main () {
   field gameField = NULL;
   piece currentPiece = NULL;
@@ -187,4 +190,39 @@ piece turnPiece (piece p, field f) {
     destroyPiece(rotPiece);
     return p;
   }
+}
+
+void zapLines (field f) {
+  for (int y = 0; y < DEPTH; y++) {
+    int zap = 1;
+
+    for (int x = 0; x < WIDTH; x++) {
+      zap = (zap && f[y][x]);
+    }
+
+    if (zap) {
+      free(f[y]);
+      f[y] = NULL;
+    }
+  }
+}
+
+int dropField (field f) {
+  int retval = 0;
+
+  for (int y = DEPTH - 1; y >= 0; --y) {
+    if (f[y])
+      continue;
+
+    retval++;
+
+    if (y) {
+      f[y] = f[y - 1];
+      f[y - 1] = NULL;
+    } else {
+      f[y] = calloc(WIDTH, sizeof(char));
+    }
+  }
+
+  return retval;
 }
