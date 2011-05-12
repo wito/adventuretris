@@ -72,6 +72,8 @@ int main () {
     destroyPiece(currentPiece);
   }
 
+  destroyPiece(currentPiece);
+
   // --- Free field --- //
 
   for (int i = 0; i < DEPTH; i++) {
