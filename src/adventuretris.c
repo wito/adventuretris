@@ -64,6 +64,8 @@ int main () {
       nudgePiece(currentPiece,gameField,(random() % 3) - 1);
     }
 
+    updateField(gameField);
+
 #ifdef DEBUG
     printField(gameField);
 #endif
