@@ -39,17 +39,15 @@ int dropField (field);
 
 void updateField (field);
 
+field createField ();
+
 int main () {
   field gameField = NULL;
   piece currentPiece = NULL;
 
   // --- Set up field --- //
 
-  gameField = calloc(DEPTH, sizeof(char *));
-
-  for (int i = 0; i < DEPTH; i++) {
-    gameField[i] = calloc(WIDTH, sizeof(char));
-  }
+  gameField = createField();
 
   // --- Main game --- //
 
@@ -94,7 +92,11 @@ int movePiece (piece p, field f) {
     location.y--;
     blitPiece (p,f);
 
+    printf("PIECE_LAND\n");
+
     return 0;
+  } else {
+    printf("PIECE_MOVE\n");
   }
 
   return 1;
@@ -105,7 +107,12 @@ int nudgePiece (piece p, field f, direction dir) {
 
   if (!collidePiece(p,f)) {
     location.x -= dir;
+
+    printf("NUDGE_FAIL\n");
+
     return 0;
+  } else {
+    printf("NUDGE\n");
   }
 
   return 1;
@@ -152,7 +159,15 @@ int spawnPiece (field f, piece *p) {
 
   *p = createPiece(type);
 
-  return collidePiece(*p, f);
+  int retval = collidePiece(*p, f);
+
+  if (retval) {
+    printf("SPAWN_PIECE: %d\n", type);
+  } else {
+    printf("SPAWN_FAIL\n");
+  }
+
+  return retval;
 }
 
 
@@ -188,15 +203,21 @@ piece turnPiece (piece p, field f) {
   piece rotPiece = rotatePiece(p);
 
   if (collidePiece(rotPiece,f)) {
+    printf("ROTATE_PIECE\n");
+
     destroyPiece(p);
     return rotPiece;
   } else {
+    printf("ROTATE_FAIL\n");
+
     destroyPiece(rotPiece);
     return p;
   }
 }
 
 void zapLines (field f) {
+  int lc = 0;
+
   for (int y = 0; y < DEPTH; y++) {
     int zap = 1;
 
@@ -207,7 +228,13 @@ void zapLines (field f) {
     if (zap) {
       free(f[y]);
       f[y] = NULL;
+
+      lc += 1;
     }
+  }
+
+  if (lc) {
+    printf("ZAP_LINE\n");
   }
 }
 
@@ -234,4 +261,16 @@ int dropField (field f) {
 void updateField (field f) {
   zapLines(f);
   while (dropField(f));
+}
+
+field createField () {
+  field gameField = calloc(DEPTH, sizeof(char *));
+
+  for (int i = 0; i < DEPTH; i++) {
+    gameField[i] = calloc(WIDTH, sizeof(char));
+  }
+
+  printf("CREATE_FIELD\n");
+
+  return gameField;
 }
