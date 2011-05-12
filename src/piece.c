@@ -44,7 +44,8 @@ piece createPiece(pieceType type) {
     self[1][2] = BLACK;
     self[2][1] = BLACK;
     self[2][2] = BLACK;
-    self[3][3] = BLACK;
+    self[3][2] = BLACK;
+  } else if (type == EmptyPiece) {
   } else assert(0);
 
   return self;
