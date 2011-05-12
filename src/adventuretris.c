@@ -49,10 +49,25 @@ int main () {
 
   while (spawnPiece(gameField, &currentPiece)) {
     while (movePiece(currentPiece,gameField)) {
+      piece rotPiece = rotatePiece(currentPiece);
+
+      if (collidePiece(rotPiece,gameField)) {
+        destroyPiece(currentPiece);
+        currentPiece = rotPiece;
+      } else {
+        destroyPiece(rotPiece);
+      }
+
+#ifdef DEBUG
+      printPiece(currentPiece);
+#endif
+
       nudgePiece(currentPiece,gameField,(random() % 3) - 1);
     }
 
+#ifdef DEBUG
     printField(gameField);
+#endif
 
     destroyPiece(currentPiece);
   }
@@ -126,7 +141,13 @@ int spawnPiece (field f, piece *p) {
   location.x = 3;
   location.y = 0;
 
-  *p = createPiece(random() % MaxPiece);
+  int type = random() % MaxPiece;
+
+#ifdef DEBUG
+  printf("piece: %d\n", type);
+#endif
+
+  *p = createPiece(type);
 
   return collidePiece(*p, f);
 }
