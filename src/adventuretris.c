@@ -84,13 +84,13 @@ int main () {
     while (movePiece(currentPiece,gameField)) {
       bytes_read = getline(&commandString, &nBytes, stdin);
 
-      printf("%s\n", commandString);
-
       command currentCommand = parseCommand(commandString);
 
       switch (currentCommand) {
-      case C_VOID:
       case C_DROP:
+        while(movePiece(currentPiece,gameField));
+        break;
+      case C_VOID:
         break;
       case C_TURN:
         currentPiece = turnPiece(currentPiece,gameField);
