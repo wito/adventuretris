@@ -1,3 +1,5 @@
+// Copyright 2012 Williham Totland
+
 #include <stdlib.h>
 #include <assert.h>
 

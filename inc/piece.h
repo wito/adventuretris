@@ -1,3 +1,5 @@
+// Copyright 2012 Williham Totland
+
 #ifndef PIECE_H
 #define PIECE_H
 

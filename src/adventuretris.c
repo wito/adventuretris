@@ -1,3 +1,5 @@
+// Copyright 2012 Williham Totland
+
 #define _BSD_SOURCE
 #define _GNU_SOURCE
 
